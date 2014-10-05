@@ -54,8 +54,8 @@ public class InterruptingExecutor implements Executor {
             // If interrupter doesn't clear this status scheduledExecutorService will
             interrupter.cancel(true);
             try {
-                boolean interrupted = interrupter.get();
-                if (interrupted) {
+                Boolean interrupted = interrupter.get();
+                if (interrupted != null && interrupted) {
                     // Clear interrupt if still interrupted, it is possible some other thread
                     // interrupted this thread, which we are not going to be responsible for
                     // clearing, but we may clear theirs if we also caused an interrupt.
@@ -68,6 +68,8 @@ public class InterruptingExecutor implements Executor {
                 // so this is also taken care of.
             } catch (ExecutionException e) {
                 // Must not happen
+            } catch (CancellationException e) {
+                // Cancelled before scheduling.
             }
         }
     }
