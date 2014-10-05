@@ -19,8 +19,19 @@ public class InterruptingExecutor implements Executor {
         @Override
         public Boolean call() throws Exception {
             if (Thread.interrupted()) {
+                // We are able to detect a cancellation early enough to prevent an interrupt
+                // the check also clears the interrupt on this thread, so we are okay
                 return false;
             } else {
+                // We have not yet received cancellation, even though it might be cancelled by
+                // now, there are three cases
+                //    a) either we return true, in which case the original thread will
+                //       clear interrupt status
+                //    b) the get() call pending itself got interrupted, in that case scheduledExecutorService
+                //       will clear the interrupt status when creating the InterruptedException.
+                //    c) The cancel appeared after processing, but interrupt on this thread was raised, this
+                //       will also be cleared by the scheduledExecutorService when it sees callable has
+                //       returned and status has not changed.
                 thread.interrupt();
                 return true;
             }
