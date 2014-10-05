@@ -13,7 +13,7 @@ public class InterruptingExecutor implements Executor {
 
         private final Thread thread;
 
-        private final AtomicBoolean done = new AtomicBoolean(true);
+        private final AtomicBoolean done = new AtomicBoolean(false);
 
         private Interrupter(Thread thread) {
             this.thread = thread;
