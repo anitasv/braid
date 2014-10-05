@@ -50,7 +50,7 @@ public class InterruptingExecutor implements Executor {
             // Make sure you eat the capsule so that no additional interrupt is possible
             actualInterrupter.run();
 
-            // Claer now.
+            // Clear now.
             Thread.interrupted();
         }
     }
